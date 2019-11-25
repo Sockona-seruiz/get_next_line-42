@@ -126,7 +126,8 @@ int			get_next_line(int fd, char **line)
 		return (-1);
 	*line[0] = '\0';
 	str = NULL;
-	if (fd < 0 || (read(fd, 0, 0)) < 0)
+	if (fd < 0 || (read(fd, 0, 0)) < 0|| line == NULL
+	    || BUFFER_SIZE <= 0)
 		return (-1);
 	current_fd = search_fd(fd, first_fd);
 	if (current_fd == NULL)
