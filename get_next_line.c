@@ -13,12 +13,6 @@
 
 #include "get_next_line.h"
 
-/*
-** Parfois, curent_buff et reminder pointent vers la meme adresse.
-** Il arive dont que je free les deux, d'où l'erreur de free.
-** à corriger donc <3
-*/
-
 void		ft_setfd_buff(char *reminder, t_fd_list *current_fd,
 			t_fd_list *first_fd, char *line)
 {
