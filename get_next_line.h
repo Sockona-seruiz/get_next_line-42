@@ -6,7 +6,7 @@
 /*   By: seruiz <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/11/21 09:10:06 by seruiz       #+#   ##    ##    #+#       */
-/*   Updated: 2019/11/25 11:52:54 by seruiz      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/11/27 09:13:05 by seruiz      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -43,6 +43,6 @@ size_t					ft_strlen(const char *s);
 t_fd_list				*ft_lstnewfd(int fd, t_fd_list *first_fd);
 void					ft_free(t_fd_list *first, char *line, char *buff);
 char					*ft_strjoin(char *s1, char *s2, t_fd_list *first_fd);
-int						ft_eof(char *line, t_fd_list *first_fd,
+long int				ft_eof(char *line, t_fd_list *first_fd,
 						t_fd_list *current_fd, int ret);
 #endif

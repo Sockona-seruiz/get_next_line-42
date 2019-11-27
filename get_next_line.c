@@ -6,7 +6,7 @@
 /*   By: seruiz <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/11/18 13:36:29 by seruiz       #+#   ##    ##    #+#       */
-/*   Updated: 2019/11/25 11:46:43 by seruiz      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/11/27 09:22:02 by seruiz      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -24,7 +24,7 @@ void		ft_setfd_buff(char *reminder, t_fd_list *current_fd,
 	while (reminder[j] != '\n')
 		j++;
 	j++;
-	i = ft_strlen(reminder) - j;
+	i = ft_eof(reminder, first_fd, current_fd, -2) - j;
 	if ((result = malloc(sizeof(char) * (i + 1))) == 0)
 		return (ft_free(first_fd, reminder, line));
 	i = 0;
@@ -122,13 +122,13 @@ int			get_next_line(int fd, char **line)
 	t_fd_list			*current_fd;
 	char				*str;
 
+	if (fd < 0 || (read(fd, 0, 0)) < 0 || line == NULL
+		|| BUFFER_SIZE <= 0)
+		return (-1);
 	if ((*line = malloc(sizeof(char) * 1)) == 0)
 		return (-1);
 	*line[0] = '\0';
 	str = NULL;
-	if (fd < 0 || (read(fd, 0, 0)) < 0|| line == NULL
-	    || BUFFER_SIZE <= 0)
-		return (-1);
 	current_fd = search_fd(fd, first_fd);
 	if (current_fd == NULL)
 	{

@@ -6,7 +6,7 @@
 /*   By: seruiz <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/11/21 09:10:31 by seruiz       #+#   ##    ##    #+#       */
-/*   Updated: 2019/11/25 11:47:18 by seruiz      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/11/27 09:43:23 by seruiz      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -36,36 +36,57 @@ void		ft_free(t_fd_list *first, char *line, char *str)
 	}
 }
 
-int			ft_eof(char *line, t_fd_list *first_fd,
-			t_fd_list *current_fd, int ret)
+int			ft_free_lst(t_fd_list *first_fd, t_fd_list *current_fd)
 {
-	if (ret == 0)
+	t_fd_list	*list;
+	t_fd_list	*tmp;
+
+	list = first_fd;
+	tmp = NULL;
+	while (list)
 	{
-		if (current_fd->buff != NULL)
-			free(current_fd->buff);
-		current_fd->buff = NULL;
-		if (!line)
-			free(line);
-		return (0);
-	}
-	if (ret == -1)
-	{
-		ft_free(first_fd, line, 0);
-		return (-1);
+		if (list->next != NULL)
+			tmp = list->next;
+		if (tmp == current_fd)
+		{
+			list->next = tmp->next;
+			if (current_fd->buff != NULL)
+				free(current_fd->buff);
+			current_fd->buff = NULL;
+			free(current_fd);
+			current_fd = NULL;
+			break ;
+		}
+		list = tmp;
 	}
 	return (0);
 }
 
-size_t		ft_strlen(const char *s)
+long int	ft_eof(char *line, t_fd_list *first_fd,
+			t_fd_list *current_fd, int ret)
 {
-	size_t	i;
+	long int i;
 
-	if (s == NULL)
-		return (0);
 	i = 0;
-	while (s[i] != '\0')
-		i++;
-	return (i);
+	if (ret == -2)
+	{
+		while (line[i])
+			i++;
+		return (i);
+	}
+	if (first_fd == current_fd)
+	{
+		first_fd = first_fd->next;
+		if (current_fd->buff != NULL)
+			free(current_fd->buff);
+		current_fd->buff = NULL;
+		return ((int)0);
+	}
+	if (ret == 0)
+		return (ft_free_lst(first_fd, current_fd));
+	if (ret == -1)
+		ft_free(first_fd, line, 0);
+	return (ret == -1 ? (int)-1 : (int)0);
 }
 
 t_fd_list	*ft_lstnewfd(int fd, t_fd_list *first_fd)
@@ -93,8 +114,8 @@ char		*ft_strjoin(char *s1, char *s2, t_fd_list *first_fd)
 	size_t	len;
 	size_t	linelen;
 
-	linelen = ft_strlen(s1);
-	len = linelen + ft_strlen(s2);
+	linelen = ft_eof(s1, NULL, NULL, -2);
+	len = linelen + ft_eof(s2, NULL, NULL, -2);
 	i = -1;
 	j = -1;
 	if (NULL == (dest = (char *)malloc(sizeof(char) * (len + 1))))
