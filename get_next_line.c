@@ -6,41 +6,20 @@
 /*   By: seruiz <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/11/28 11:13:00 by seruiz       #+#   ##    ##    #+#       */
-/*   Updated: 2019/11/28 14:59:33 by seruiz      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/11/28 15:33:17 by seruiz      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
-# include "get_next_line.h"
-
-int		ft_free(char *s1, char *s2, t_fd_list *lst)
-{
-	if (s1 != NULL)
-		free(s1);
-	if (s2 != NULL)
-		free(s2);
-	if (lst->buff != NULL)
-		free(lst->buff);
-	return (-1);
-}
-
-size_t	ft_strlen(char *s)
-{
-	size_t i;
-
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
-}
+#include "get_next_line.h"
 
 char	*ft_strjoin(char *s1, char *s2, t_fd_list *lst)
 {
-	char    *dest;
-	size_t  i;
-	size_t  j;
-	size_t  len;
-	size_t  linelen;
+	char	*dest;
+	size_t	i;
+	size_t	j;
+	size_t	len;
+	size_t	linelen;
 
 	linelen = ft_strlen(s1);
 	len = linelen + ft_strlen(s2);
@@ -86,8 +65,8 @@ int		ft_setfd_buff(int i, char *reader, t_fd_list *lst)
 
 int		compute_buff(char *reader, char **line, t_fd_list *lst)
 {
-	int i;
-	char *buff;
+	int		i;
+	char	*buff;
 
 	if ((buff = malloc(sizeof(char) * (ft_strlen(reader) + 1))) == 0)
 	{
@@ -111,42 +90,30 @@ int		compute_buff(char *reader, char **line, t_fd_list *lst)
 	return (1);
 }
 
-int		ft_eof(t_fd_list *lst)
-{
-	if (lst->buff != NULL)
-		free(lst->buff);
-	lst->buff = NULL;
-	return (0);
-}
-
 int		treat_buff(int fd, char **line, t_fd_list *lst)
 {
-	int ret;
-	char *reader;
-	int retval;
-	int test;
+	int		ret;
+	char	*rd;
+	int		retval;
+	int		test;
 
 	test = 0;
 	retval = 0;
 	if (lst->buff != NULL)
 		if ((test = compute_buff(lst->buff, line, lst)) == 0)
 			return (1);
-	if (test == -1)
-		return (-1);
-	if ((reader = malloc(sizeof(char) * (BUFFER_SIZE + 1))) == 0)
+	if (((rd = malloc(sizeof(char) * (BUFFER_SIZE + 1))) == 0) || (test == -1))
 		return (ft_free(NULL, NULL, lst));
-	if ((ret = read(fd, reader, BUFFER_SIZE)) <= 0)
+	if ((ret = read(fd, rd, BUFFER_SIZE)) <= 0)
 		retval = 1;
-	reader[ret] = '\0';
-	while (retval == 0 && ((test = compute_buff(reader, line, lst)) == 1))
+	rd[ret] = '\0';
+	while (retval == 0 && ((test = compute_buff(rd, line, lst)) == 1))
 	{
-		if (test == -1)
-			return (-1);
-		if ((ret = read(fd, reader, BUFFER_SIZE)) <= 0)
+		if ((ret = read(fd, rd, BUFFER_SIZE)) <= 0)
 			retval = 1;
-		reader[ret] = '\0';
+		rd[ret] = '\0';
 	}
-	free(reader);
+	free(rd);
 	if (test == -1)
 		return (-1);
 	return (retval == 1 ? ft_eof(lst) : 1);
