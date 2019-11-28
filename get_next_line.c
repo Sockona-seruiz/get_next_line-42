@@ -1,146 +1,159 @@
 /* ************************************************************************** */
 /*                                                          LE - /            */
 /*                                                              /             */
-/*   get_next_line_char.c                             .::    .:/ .      .::   */
+/*   get_next_line.c                                  .::    .:/ .      .::   */
 /*                                                 +:+:+   +:    +:  +:+:+    */
 /*   By: seruiz <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
-/*   Created: 2019/11/18 13:36:29 by seruiz       #+#   ##    ##    #+#       */
-/*   Updated: 2019/11/27 09:22:02 by seruiz      ###    #+. /#+    ###.fr     */
+/*   Created: 2019/11/28 11:13:00 by seruiz       #+#   ##    ##    #+#       */
+/*   Updated: 2019/11/28 14:44:15 by seruiz      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+# include "get_next_line.h"
 
-void		ft_setfd_buff(char *reminder, t_fd_list *current_fd,
-			t_fd_list *first_fd, char *line)
+int		ft_free(char *s1, char *s2, t_fd_list *lst)
 {
-	int			i;
-	int			j;
-	char		*result;
+	if (s1 != NULL)
+		free(s1);
+	if (s2 != NULL)
+		free(s2);
+	if (lst->buff != NULL)
+		free(lst->buff);
+	return (-1);
+}
+
+size_t	ft_strlen(char *s)
+{
+	size_t i;
+
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
+}
+
+char	*ft_strjoin(char *s1, char *s2, t_fd_list *lst)
+{
+	char    *dest;
+	size_t  i;
+	size_t  j;
+	size_t  len;
+	size_t  linelen;
+
+	linelen = ft_strlen(s1);
+	len = linelen + ft_strlen(s2);
+	i = -1;
+	j = -1;
+	if (NULL == (dest = (char *)malloc(sizeof(char) * (len + 1))))
+	{
+		ft_free(s1, s2, lst);
+		return (NULL);
+	}
+	while (s1[++i])
+		dest[i] = s1[i];
+	while (s2[++j])
+		dest[i + j] = s2[j];
+	dest[i + j] = '\0';
+	free(s2);
+	if (s1 != NULL)
+		free(s1);
+	return (dest);
+}
+
+int		ft_setfd_buff(int i, char *reader, t_fd_list *lst)
+{
+	char	*result;
+	int		j;
 
 	j = 0;
-	while (reminder[j] != '\n')
-		j++;
-	j++;
-	i = ft_eof(reminder, first_fd, current_fd, -2) - j;
-	if ((result = malloc(sizeof(char) * (i + 1))) == 0)
-		return (ft_free(first_fd, reminder, line));
-	i = 0;
-	while (reminder[j])
+	if (1)//(result = malloc(sizeof(char) * (BUFFER_SIZE - i))) == 0)
+		return (ft_free(reader, NULL, lst));
+	i++;
+	while (reader[i])
 	{
-		result[i] = reminder[j];
+		result[j] = reader[i];
 		i++;
 		j++;
 	}
-	result[i] = '\0';
-	if (reminder != current_fd->buff)
-		free(reminder);
-	free(current_fd->buff);
-	current_fd->buff = result;
+	result[j] = '\0';
+	if (lst->buff != NULL)
+		free(lst->buff);
+	lst->buff = result;
+	return (0);
 }
 
-int			compute_buff(char *buff, t_fd_list *current_fd,
-			char **line, t_fd_list *first_fd)
+int		compute_buff(char *reader, char **line, t_fd_list *lst)
 {
-	char	*buffchar;
-	int		i;
+	int i;
+	char *buff;
 
-	if ((buffchar = malloc(sizeof(char) * (BUFFER_SIZE + 1))) == 0)
-	{
-		ft_free(first_fd, *line, buff);
+	if ((buff = malloc(sizeof(char) * (ft_strlen(reader) + 1))) == 0)
 		return (-1);
-	}
 	i = 0;
-	while (buff[i])
+	while (reader[i])
 	{
-		buffchar[i] = buff[i];
-		if (buff[i] == '\n')
+		buff[i] = reader[i];
+		if (reader[i] == '\n')
 		{
-			buffchar[i] = '\0';
-			*line = ft_strjoin(*line, buffchar, first_fd);
-			ft_setfd_buff(buff, current_fd, first_fd, *line);
-			return (0);
+			buff[i] = '\0';
+			*line = ft_strjoin(*line, buff, lst);
+			return (ft_setfd_buff(i, reader, lst));
 		}
 		i++;
 	}
-	buffchar[i] = '\0';
-	*line = ft_strjoin(*line, buffchar, first_fd);
+	buff[i] = '\0';
+	*line = ft_strjoin(*line, buff, lst);
 	return (1);
 }
 
-int			treat_buff(char *str, t_fd_list *crfd, char **line,
-			t_fd_list *first_fd)
+int		ft_eof(t_fd_list *lst)
 {
-	char	*reader;
-	int		ret;
-	int		retval;
+	if (lst->buff != NULL)
+		free(lst->buff);
+	lst->buff = NULL;
+	return (0);
+}
+
+int		treat_buff(int fd, char **line, t_fd_list *lst)
+{
+	int ret;
+	char *reader;
+	int retval;
 
 	retval = 0;
-	if (str != NULL)
-		if ((compute_buff(str, crfd, line, first_fd)) == 0)
-			return (1);
+	if (lst->buff != NULL)
+		if ((compute_buff(lst->buff, line, lst)) == 0)
+			return (1);	
 	if ((reader = malloc(sizeof(char) * (BUFFER_SIZE + 1))) == 0)
-	{
-		ft_free(first_fd, *line, 0);
 		return (-1);
-	}
-	if ((ret = read(crfd->fd, reader, BUFFER_SIZE)) <= 0)
+	if ((ret = read(fd, reader, BUFFER_SIZE)) <= 0)
 		retval = 1;
 	reader[ret] = '\0';
-	while (retval == 0 && ((compute_buff(reader, crfd, line, first_fd))) == 1)
+	while (retval == 0 && (compute_buff(reader, line, lst) == 1))
 	{
-		if ((ret = read(crfd->fd, reader, BUFFER_SIZE)) <= 0)
+		if ((ret = read(fd, reader, BUFFER_SIZE)) <= 0)
 			retval = 1;
 		reader[ret] = '\0';
 	}
-	if (retval)
-		free(reader);
-	return (retval == 1 ? ft_eof(*line, first_fd, crfd, ret) : 1);
+	free(reader);
+	return (retval == 1 ? ft_eof(lst) : 1);
 }
 
-t_fd_list	*search_fd(int fd, t_fd_list *first_fd)
+int		get_next_line(int fd, char **line)
 {
-	t_fd_list	*current_fd;
-
-	current_fd = first_fd;
-	if (current_fd == 0)
-		return (0);
-	while (current_fd->next != NULL)
-	{
-		if (current_fd->fd == fd)
-			return (current_fd);
-		current_fd = current_fd->next;
-	}
-	return (current_fd);
-}
-
-int			get_next_line(int fd, char **line)
-{
-	static t_fd_list	*first_fd;
-	t_fd_list			*current_fd;
-	char				*str;
+	static t_fd_list	static_lst[FD_SETSIZE];
 
 	if (fd < 0 || (read(fd, 0, 0)) < 0 || line == NULL
 		|| BUFFER_SIZE <= 0)
 		return (-1);
 	if ((*line = malloc(sizeof(char) * 1)) == 0)
+	{
+		if (static_lst[fd].buff != NULL)
+			free(static_lst[fd].buff);
 		return (-1);
+	}
 	*line[0] = '\0';
-	str = NULL;
-	current_fd = search_fd(fd, first_fd);
-	if (current_fd == NULL)
-	{
-		first_fd = ft_lstnewfd(fd, first_fd);
-		current_fd = first_fd;
-	}
-	else if (current_fd->fd == fd)
-		str = current_fd->buff;
-	else
-	{
-		current_fd->next = ft_lstnewfd(fd, first_fd);
-		current_fd = current_fd->next;
-	}
-	return (treat_buff(str, current_fd, line, first_fd));
+	return (treat_buff(fd, line, &static_lst[fd]));
 }

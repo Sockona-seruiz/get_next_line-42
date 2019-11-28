@@ -5,8 +5,8 @@
 /*                                                 +:+:+   +:    +:  +:+:+    */
 /*   By: seruiz <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
-/*   Created: 2019/11/21 09:10:06 by seruiz       #+#   ##    ##    #+#       */
-/*   Updated: 2019/11/27 09:13:05 by seruiz      ###    #+. /#+    ###.fr     */
+/*   Created: 2019/11/28 12:38:08 by seruiz       #+#   ##    ##    #+#       */
+/*   Updated: 2019/11/28 12:39:34 by seruiz      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -24,25 +24,9 @@
 # include <stdio.h>
 # include <stdlib.h>
 
-typedef struct			s_fd_list
+typedef	struct		s_fd_list
 {
-	int					fd;
-	char				*buff;
-	struct s_fd_list	*next;
-}						t_fd_list;
-void					ft_setfd_buff(char *reminder, t_fd_list *current_fd,
-						t_fd_list *first_fd, char *line);
-int						compute_buff(char *buff, t_fd_list *current_fd,
-						char **line, t_fd_list *first_fd);
-int						treat_buff(char *str, t_fd_list *current_fd,
-						char **line,
-						t_fd_list *first_fd);
-t_fd_list				*search_fd(int fd, t_fd_list *first_fd);
-int						get_next_line(int fd, char **line);
-size_t					ft_strlen(const char *s);
-t_fd_list				*ft_lstnewfd(int fd, t_fd_list *first_fd);
-void					ft_free(t_fd_list *first, char *line, char *buff);
-char					*ft_strjoin(char *s1, char *s2, t_fd_list *first_fd);
-long int				ft_eof(char *line, t_fd_list *first_fd,
-						t_fd_list *current_fd, int ret);
+	char			*buff;
+}					t_fd_list;
+int					get_next_line(int fd, char **line);
 #endif
