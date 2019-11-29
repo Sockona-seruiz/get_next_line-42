@@ -6,7 +6,7 @@
 /*   By: seruiz <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/11/28 11:13:00 by seruiz       #+#   ##    ##    #+#       */
-/*   Updated: 2019/11/29 13:15:10 by seruiz      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/11/29 17:34:39 by seruiz      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -41,14 +41,14 @@ char	*ft_strjoin(char *s1, char *s2, t_fd_list *lst)
 	return (dest);
 }
 
-int		ft_setfd_buff(int i, char *reader, t_fd_list *lst)
+int		ft_setfd_buff(int i, char *reader, char *line, t_fd_list *lst)
 {
 	char	*result;
 	int		j;
 
 	j = 0;
 	if ((result = malloc(sizeof(char) * (BUFFER_SIZE - i))) == 0)
-		return (ft_free(reader, NULL, lst));
+		return (ft_free(NULL, line, lst));
 	i++;
 	while (reader[i])
 	{
@@ -69,7 +69,7 @@ int		compute_buff(char *reader, char **line, t_fd_list *lst)
 	char	*buff;
 
 	if ((buff = malloc(sizeof(char) * (ft_strlen(reader) + 1))) == 0)
-		return (-1);
+		return (ft_free(*line, NULL, lst));
 	i = 0;
 	while (reader[i])
 	{
@@ -77,13 +77,15 @@ int		compute_buff(char *reader, char **line, t_fd_list *lst)
 		if (reader[i] == '\n')
 		{
 			buff[i] = '\0';
-			*line = ft_strjoin(*line, buff, lst);
-			return (ft_setfd_buff(i, reader, lst));
+			if ((*line = ft_strjoin(*line, buff, lst)) == NULL)
+				return (-1);
+			return (ft_setfd_buff(i, reader, *line, lst));
 		}
 		i++;
 	}
 	buff[i] = '\0';
-	*line = ft_strjoin(*line, buff, lst);
+	if ((*line = ft_strjoin(*line, buff, lst)) == NULL)
+		return (-1);
 	return (1);
 }
 
