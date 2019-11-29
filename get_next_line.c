@@ -6,7 +6,7 @@
 /*   By: seruiz <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/11/28 11:13:00 by seruiz       #+#   ##    ##    #+#       */
-/*   Updated: 2019/11/28 15:33:17 by seruiz      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/11/29 13:15:10 by seruiz      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -69,10 +69,7 @@ int		compute_buff(char *reader, char **line, t_fd_list *lst)
 	char	*buff;
 
 	if ((buff = malloc(sizeof(char) * (ft_strlen(reader) + 1))) == 0)
-	{
-		printf("test");
 		return (-1);
-	}
 	i = 0;
 	while (reader[i])
 	{
@@ -95,26 +92,26 @@ int		treat_buff(int fd, char **line, t_fd_list *lst)
 	int		ret;
 	char	*rd;
 	int		retval;
-	int		test;
+	int		ex;
 
-	test = 0;
+	ex = 0;
 	retval = 0;
 	if (lst->buff != NULL)
-		if ((test = compute_buff(lst->buff, line, lst)) == 0)
+		if ((ex = compute_buff(lst->buff, line, lst)) == 0)
 			return (1);
-	if (((rd = malloc(sizeof(char) * (BUFFER_SIZE + 1))) == 0) || (test == -1))
+	if (((rd = malloc(sizeof(char) * (BUFFER_SIZE + 1))) == 0) || (ex == -1))
 		return (ft_free(NULL, NULL, lst));
 	if ((ret = read(fd, rd, BUFFER_SIZE)) <= 0)
 		retval = 1;
 	rd[ret] = '\0';
-	while (retval == 0 && ((test = compute_buff(rd, line, lst)) == 1))
+	while (ex >= 0 && retval == 0 && ((ex = compute_buff(rd, line, lst)) == 1))
 	{
 		if ((ret = read(fd, rd, BUFFER_SIZE)) <= 0)
 			retval = 1;
 		rd[ret] = '\0';
 	}
 	free(rd);
-	if (test == -1)
+	if (ex == -1)
 		return (-1);
 	return (retval == 1 ? ft_eof(lst) : 1);
 }
