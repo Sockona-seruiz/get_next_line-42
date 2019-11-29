@@ -6,7 +6,7 @@
 /*   By: seruiz <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/11/28 11:13:00 by seruiz       #+#   ##    ##    #+#       */
-/*   Updated: 2019/11/29 17:34:39 by seruiz      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/11/29 17:40:15 by seruiz      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -102,7 +102,7 @@ int		treat_buff(int fd, char **line, t_fd_list *lst)
 		if ((ex = compute_buff(lst->buff, line, lst)) == 0)
 			return (1);
 	if (((rd = malloc(sizeof(char) * (BUFFER_SIZE + 1))) == 0) || (ex == -1))
-		return (ft_free(NULL, NULL, lst));
+		return (ft_free(*line, NULL, lst));
 	if ((ret = read(fd, rd, BUFFER_SIZE)) <= 0)
 		retval = 1;
 	rd[ret] = '\0';
