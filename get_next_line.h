@@ -6,7 +6,7 @@
 /*   By: seruiz <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/11/28 12:38:08 by seruiz       #+#   ##    ##    #+#       */
-/*   Updated: 2019/11/29 17:21:30 by seruiz      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/12/02 10:29:10 by seruiz      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -30,7 +30,8 @@ typedef	struct		s_fd_list
 }					t_fd_list;
 int					get_next_line(int fd, char **line);
 char				*ft_strjoin(char *s1, char *s2, t_fd_list *lst);
-int					ft_setfd_buff(int i, char *reader, char *buff, t_fd_list *lst);
+int					ft_setfd_buff(int i, char *reader,
+					char *buff, t_fd_list *lst);
 int					compute_buff(char *reader, char **line, t_fd_list *lst);
 int					treat_buff(int fd, char **line, t_fd_list *lst);
 int					ft_free(char *s1, char *s2, t_fd_list *lst);
