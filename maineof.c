@@ -6,7 +6,7 @@
 /*   By: seruiz <marvin@le-101.fr>                  +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/11/21 12:32:34 by seruiz       #+#   ##    ##    #+#       */
-/*   Updated: 2019/11/28 17:46:14 by seruiz      ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/12/02 11:35:24 by seruiz      ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -34,14 +34,16 @@ int	main(void)
 	{
 		while((ret = get_next_line(fd[i], &buff)) >= 0)
 		{
-			//printf("resut : %s\n ret : %d\n\n", buff, ret);
+			printf("resut : %s\n ret : %d\n\n", buff, ret);
 			free(buff);
 			if (ret == 0)
 				break;
 		}
-		ret = get_next_line(fd[i], &buff);
-		//printf("resut : %s\n ret : %d\n\n", buff, ret);
-		free(buff);
+		if ((ret = get_next_line(fd[i], &buff)) >= 0)
+		{
+			printf("resut : %s\n ret : %d\n\n", buff, ret);
+			free(buff);
+		}
 		i++;
 	}
 	i = 0;
